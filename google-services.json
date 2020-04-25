@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "95156408400",
+    "firebase_url": "https://trifle-app.firebaseio.com",
+    "project_id": "trifle-app",
+    "storage_bucket": "trifle-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:95156408400:android:baa51bd91a735c12a7c155",
+        "android_client_info": {
+          "package_name": "com.trifle.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "95156408400-8f72lq39eq8o55jgs03j32t2ua31chs8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQvc-N-MKxBy9aNVrmFTDp0nC9jwy_I-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "95156408400-8f72lq39eq8o55jgs03j32t2ua31chs8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
