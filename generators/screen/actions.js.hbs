@@ -1,0 +1,31 @@
+/*
+ *
+ * {{ properCase name }} actions
+ *
+ */
+
+import { {{ upperCase name }}_START, {{ upperCase name }}_SUCCESS, {{ upperCase name }}_ERROR } from './constants';
+
+export const {{ properCase name }}Action = {
+  start: ({ payload, metadata }) => {
+    return {
+      type: {{ upperCase name }}_START, 
+      payload, 
+      metadata
+    }
+  },
+  success: ({ payload, metadata }) => {
+    return {
+      type: {{ upperCase name }}_SUCCESS,
+      payload,
+      metadata
+    }
+  },
+  error: ({ error }) => {
+    return {
+      type: {{ upperCase name }}_ERROR,
+      payload,
+      metadata
+    }
+  }
+};

@@ -1,0 +1,38 @@
+/*
+ *
+ * {{ properCase name }} reducer
+ *
+ */
+import produce from 'immer';
+import { {{ upperCase name }}_START, {{ upperCase name }}_SUCCESS, {{ upperCase name }}_ERROR } from './constants';
+
+export const initialState = {
+  loading: false,
+  error: false,
+  data: {}
+};
+
+const {{ camelCase name }}Reducer = (state = initialState, action) => {
+  return produce(state, draft => {
+    switch (action.type) {
+      case {{ upperCase name }}_START:
+        draft.loading = true;
+        draft.error = false;
+        break;
+
+      case {{ upperCase name }}_SUCCESS:
+        draft.loading = false;
+        draft.error = false;
+        draft.data = action.payload.data
+        break;
+        
+      case {{ upperCase name }}_ERROR:
+        draft.loading = false;
+        draft.error = action.error;
+        break;
+    }
+  });
+}
+
+
+export default {{ camelCase name }}Reducer;

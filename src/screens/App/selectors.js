@@ -25,6 +25,18 @@ const makeSelectError = () =>
     subState => subState.error,
   );
 
+const makeSelectAppDataRecommended = () =>
+  createSelector(
+    selectAppDomain,
+    subState => subState.data.appData.recommended,
+  );
+
+const makeSelectAppDataFeatured = () =>
+  createSelector(
+    selectAppDomain,
+    subState => subState.data.appData.featured,
+  );
+
 
 const makeSelectUserOnboardingStatus = () =>
   createSelector(
@@ -33,4 +45,4 @@ const makeSelectUserOnboardingStatus = () =>
   );
 
 
-export { makeSelectAppState, makeSelectLoading, makeSelectError, makeSelectUserOnboardingStatus };
+export { makeSelectAppState, makeSelectLoading, makeSelectError, makeSelectUserOnboardingStatus, makeSelectAppDataRecommended, makeSelectAppDataFeatured };

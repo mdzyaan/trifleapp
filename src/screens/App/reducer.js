@@ -15,6 +15,32 @@ export const initialState = {
         mode: 'dark',
       }
     },
+    appData:{
+      featured: [
+      ],
+      recommended: [{
+        title: "How to be better at stressed",
+        readDuration: 5,
+        thumbnail: "http://i3.ytimg.com/vi/RcGyVTAoXEU/maxresdefault.jpg",
+        author: "Tara Parker-Pope",
+        publisher: "The New York Times",
+        url: "https://medium.com/the-mission/how-to-reduce-stress-91f74e22c878"
+      }, {
+        title: "6 simple yoga stretches for daily workouts",
+        readDuration: 30,
+        thumbnail: "http://i3.ytimg.com/vi/RcGyVTAoXEU/maxresdefault.jpg",
+        author: "Tara Parker-Pope",
+        publisher: "The New York Times",
+        url: "https://medium.com/the-mission/how-to-reduce-stress-91f74e22c878"
+      }, {
+        title: "How to be better at stress",
+        readDuration: 30,
+        thumbnail: "http://i3.ytimg.com/vi/RcGyVTAoXEU/maxresdefault.jpg",
+        author: "Tara Parker-Pope",
+        publisher: "The New York Times",
+        url: "https://medium.com/the-mission/how-to-reduce-stress-91f74e22c878"
+      }],
+    },
     user: {
       onboarded: false,
     }
@@ -30,11 +56,14 @@ const appReducer = (state = initialState, action) => {
         break;
 
       case APP_SUCCESS:
+        
         draft.loading = false;
         draft.error = false;
-        draft.data = action.payload.data
+        draft.data.appData = {
+          ...draft.data.appData,
+          ...action.payload,
+        }
         break;
-        
       case APP_ERROR:
         draft.loading = false;
         draft.error = action.error;

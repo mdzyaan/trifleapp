@@ -9,7 +9,7 @@ import { HOME_START, HOME_SUCCESS, HOME_ERROR } from './constants';
 export const initialState = {
   loading: false,
   error: false,
-  data: {}
+  data: []
 };
 
 const homeReducer = (state = initialState, action) => {
@@ -23,7 +23,7 @@ const homeReducer = (state = initialState, action) => {
       case HOME_SUCCESS:
         draft.loading = false;
         draft.error = false;
-        draft.data = action.payload.data
+        draft.data = action.payload;
         break;
         
       case HOME_ERROR:

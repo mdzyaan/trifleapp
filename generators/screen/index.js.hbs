@@ -1,0 +1,49 @@
+/**
+ *
+ * {{properCase name }}
+ *
+ */
+import React, { 
+  useState, 
+  useEffect, 
+  useContext,
+} from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { makeSelect{{properCase name}}State, makeSelectLoading, makeSelectError} from './selectors';
+import { {{ properCase name }}Action } from './actions';
+import { View, Text } from 'react-native';
+
+export const {{ properCase name }} = props => {
+  return (
+    <View>
+      <Text>
+        {{properCase name}} screen
+      </Text>
+    </View>
+  );
+}
+{{ properCase name }}.propTypes = {
+  // {{ properCase name }}Start: PropTypes.func.isRequired,
+};
+export const mapStateToProps = (state,props) => {
+  // @dev you can pass props to makeSelectFuncs(props) like so.
+  return createStructuredSelector({
+    {{ camelCase name }}: makeSelect{{properCase name}}State(),
+    loading: makeSelectLoading(),
+    error: makeSelectError()
+});
+} 
+export const mapDispatchToProps = (dispatch) => {
+  return {
+    {{ properCase name }}Start: ({ payload, metadata }) => dispatch({{ properCase name }}Action.start({ payload, metadata }))
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)({{ properCase name }});
+    
+    
+  
+  
+

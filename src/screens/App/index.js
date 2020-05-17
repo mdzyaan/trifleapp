@@ -4,33 +4,52 @@
  *
  */
 import React, { 
-  useState, 
-  useEffect, 
-  useContext,
+  useState,
+  useEffect,
+  useMemo
 } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { makeSelectAppState, makeSelectLoading, makeSelectError, makeSelectUserOnboardingStatus} from './selectors';
+import { makeSelectAppState, makeSelectLoading, makeSelectError, makeSelectUserOnboardingStatus, makeSelectAppDataRecommended, makeSelectAppDataFeatured } from './selectors';
 import { AppAction, userOnboardAction } from './actions';
-import { useColorScheme } from 'react-native-appearance';
 import localStorageConstant from '../../common/localStorage';
 import * as Font from 'expo-font';
 import {AppLoading} from 'expo';
 import HomeScreen from '../Home';
 import CollectionScreen from '../Collection';
 import WebviewScreen from '../Webview';
-// import YoutubeScreen from '../Youtube';
+import YoutubeScreen from '../Youtube';
+import FeaturedScreen from '../Featured';
 
 import OnboardingScreen from '../Onboarding';
 import asyncStorage from '../../utils/asyncStorage';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
+import { PAGES } from '../../common/constant';
+import NoInternet from '../../components/NoInternet/index';
+import NetInfo from '@react-native-community/netinfo';
+import { View } from 'react-native';
 
 export const App = props => {
-  const { userOnboardActionSuccess, userOnboardingStatus, loading } = props;
+  const { userOnboardActionSuccess, userOnboardingStatus, loading, AppStart, recommendedSectionData, featuredSectionData } = props;
   const Stack = createStackNavigator();
 
+  const [internetConnected, setInternetConnected] = useState(true);
+
+  useEffect(() => {
+    const unsubscribeNetworkStatus = NetInfo.addEventListener(state => {
+      setInternetConnected(state.isConnected);
+    });
+
+    // return unsubscribeNetworkStatus();
+  }, [internetConnected]);
+  
+
+  const appData = {
+    recommendedSectionData,
+    featuredSectionData,
+  }
   useEffect(() => {
     
     async function fetchUserOnboardingStatus() {
@@ -48,14 +67,13 @@ export const App = props => {
       } catch (error) {
         console.log("font",error)
       }
+      AppStart();
       const getUserOnboardingStatus = await asyncStorage.getItem(localStorageConstant.USER_ONBOARDED);
       if (getUserOnboardingStatus)  {
         userOnboardActionSuccess({ metadata: { onboarded: getUserOnboardingStatus } });
-        console.log(true)
 
       } else {
         userOnboardActionSuccess({ metadata: { onboarded: false } });
-        console.log(false)
       }
 
     }
@@ -63,39 +81,54 @@ export const App = props => {
     fetchUserOnboardingStatus()
   }, []);
 
-  const colorScheme = useColorScheme();
+
+  const renderApp = useMemo(() => {
+
+    return internetConnected ? (
+      <>
+        <Stack.Screen name={PAGES.HOME} options={{
+          headerShown: false
+        }}>
+          {stackProps => <HomeScreen {...stackProps} appData={appData} />}
+        </Stack.Screen>
+        <Stack.Screen name={PAGES.COLLECTION} component={CollectionScreen} options={{
+          headerShown: false
+        }} />
+        <Stack.Screen name={PAGES.WEBVIEW} component={WebviewScreen} />
+        <Stack.Screen name={PAGES.YOUTUBE} component={YoutubeScreen} options={{
+          headerShown: false
+        }} />
+        <Stack.Screen name={PAGES.FEATURED} component={FeaturedScreen} />
+      </>
+    ) : (
+        <Stack.Screen name={PAGES.NO_INTERNET} options={{
+          headerShown: false
+        }}>
+          {stackProps => (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+              <NoInternet />
+            </View>
+          )}
+        </Stack.Screen>
+      )
+  }, [internetConnected])
   return (
     <NavigationContainer>
       {!loading ? (
-        <Stack.Navigator >
-          {userOnboardingStatus ? (
-            <>
-              <Stack.Screen name="Home" component={HomeScreen}  options={{
-                headerShown: false
-              }}/>
-              <Stack.Screen name="Collection" component={CollectionScreen} options={{
-                headerShown: false
-              }}/>
-              <Stack.Screen name="webview" component={WebviewScreen} options={{
-                // headerShown: false
-              }}/>
-              {/* <Stack.Screen name="youtube" component={YoutubeScreen} options={{
-                // headerShown: false
-              }}/> */}
-            </>
-          ) : (
-              <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{
+        <Stack.Navigator 
+          screenOptions={{
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+          }}
+        >
+          {userOnboardingStatus ? renderApp
+           : (
+              <Stack.Screen name={PAGES.ONBOARDING} component={OnboardingScreen} options={{
               headerShown: false
             }}/>
             )}
         </Stack.Navigator>
       ) : <AppLoading />}
     </NavigationContainer>
-    // <SafeAreaView style={[styles.container, themeContainerStyle]}>
-    //   <StatusBar barStyle={themeStatusBarStyle} />
-    //   <MainNavigation />
-      
-    // </SafeAreaView>
   );
 }
 App.propTypes = {
@@ -106,12 +139,14 @@ export const mapStateToProps = (state,props) => {
     app: makeSelectAppState(),
     loading: makeSelectLoading(),
     error: makeSelectError(),
-    userOnboardingStatus: makeSelectUserOnboardingStatus()
+    userOnboardingStatus: makeSelectUserOnboardingStatus(),
+    recommendedSectionData: makeSelectAppDataRecommended(), 
+    featuredSectionData: makeSelectAppDataFeatured(),
 });
 } 
 export const mapDispatchToProps = (dispatch) => {
   return {
-    AppStart: ({ payload, metadata }) => dispatch(AppAction.start({ payload, metadata })),
+    AppStart: () => dispatch(AppAction.start()),
     userOnboardActionSuccess: ({ metadata }) => dispatch(userOnboardAction.success({  metadata }))
   };
 }

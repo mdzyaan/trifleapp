@@ -52,22 +52,22 @@ export const Onboarding = props => {
 
   const PAGES = [
     {
-      title: 'Constant Support',
-      description: "We are here to help you get rid of the stress you might have.",
+      title: 'Welcome to Trifle',
+      description: "Your self-care journey starts here",
       backgroundColor: theme.palette.primary.orange.three,
       width: 16,
       image: <O1 width={PAGE_WIDTH - 110} height={PAGE_WIDTH - 110}/>,
     },
     {
-      title: 'Reduce Stress',
-      description: "We are here to help you get rid of the stress you might have. ",
+      title: 'Stay Energized',
+      description: "Live a life free of anxiety, depression, & stress",
       backgroundColor: theme.palette.primary.green.three,
       width: 16,
       image: <O2 width={PAGE_WIDTH - 110} height={PAGE_WIDTH - 110}/>,
     },
     {
-      title: 'Stay Energized',
-      description: "We are here to help you get rid of the stress you might have.",
+      title: 'We care about you',
+      description: "So we have curated the best resources just for you",
       backgroundColor: theme.palette.primary.orange.three,
       width: 16,
       image: <O3 width={PAGE_WIDTH - 110} height={PAGE_WIDTH - 110}/>
@@ -117,7 +117,7 @@ export const Onboarding = props => {
       width: 16,
     }
   })
-  console.log("onboardingView", onboardingView)
+
   return (
 
     <View style={styles.container}>
@@ -145,11 +145,6 @@ export const Onboarding = props => {
             <View key={i} style={styles.page}>
               <View style={[styles.frame]}>
                 {page.image}
-                {/* <Animated.Image
-                  resizeMode="contain"
-                  source={page.image}
-                  style={styles.photo}
-                /> */}
               </View>
               <View style={[styles.card]}>
                 <Text style={styles.title}>{page.title}</Text>
@@ -164,15 +159,15 @@ export const Onboarding = props => {
         <View active={onboardingView === 2} style={[paginationItem.default, onboardingView === 2 ? paginationItem.active : '', ]}/>
         <View active={onboardingView === 3} style={[paginationItem.default, onboardingView === 3 ? paginationItem.active : '']}/>
       </PaginationContainer>  
-      <View style={styles.button}>
-        <TouchableOpacity 
+      <TouchableOpacity style={styles.button} onPress={triggerNext}>
+        <View 
           
           style={styles.buttonText}
-          onPress={triggerNext}
+          
         >
           <AntDesign name="arrowright" size={32} color="white" />
-        </TouchableOpacity>          
-      </View>
+        </View>          
+      </TouchableOpacity>
     </View>
   );
 }
@@ -255,6 +250,7 @@ const styles = StyleSheet.create({
   page: {
     width: PAGE_WIDTH,
     paddingTop: 48,
+    alignItems: 'center',
   },
   card: {
     position: 'absolute',

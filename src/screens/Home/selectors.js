@@ -13,6 +13,12 @@ const makeSelectHomeState = () => createSelector( selectHomeDomain, subState => 
  * Other specific selectors
  */
 
+const makeSelectRecommendedData = () =>
+  createSelector(
+    selectHomeDomain,
+    subState => subState.data,
+  );
+
 const makeSelectLoading = () =>
   createSelector(
     selectHomeDomain,
@@ -27,4 +33,4 @@ const makeSelectError = () =>
 
 
 
-export { makeSelectHomeState, makeSelectLoading, makeSelectError };
+export { makeSelectHomeState, makeSelectLoading, makeSelectError, makeSelectRecommendedData };

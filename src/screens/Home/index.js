@@ -11,7 +11,7 @@ import React, {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { makeSelectHomeState, makeSelectLoading, makeSelectError} from './selectors';
+import { makeSelectHomeState, makeSelectLoading, makeSelectError, makeSelectRecommendedData} from './selectors';
 import { HomeAction } from './actions';
 import { Text, View, Animated, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
 import theme from '../../styles';
@@ -25,42 +25,108 @@ import FocusIcon from '../../assets/icons/focus.svg';
 import ConfidenceIcon from '../../assets/icons/confidence.svg';
 import DepressionIcon from '../../assets/icons/depression.svg';
 import MotivationIcon from '../../assets/icons/motivation.svg';
+import CovidIcon from '../../assets/icons/covid.svg';
+import SunIcon from '../../assets/icons/sun.svg';
+import MoonIcon from '../../assets/icons/moon.svg';
 import FeaturedIllustrationIcon from '../../assets/icons/featuredIllustration.svg';
 import FooterIllustrationIcon from '../../assets/icons/homeFooter.svg';
+import ArticleCard from '../../components/ArticleCard/index';
+import { COLLECTION_NAME, PAGES, dataFromAPI } from '../../common/constant';
 
-const collectionsData = [{ name: 'Stress', description: 'Improve yourself & get better', icon: <StressIcon width={24} height={24} /> }, { name: 'Confidence', description: 'Improve yourself & get better', icon: <ConfidenceIcon width={24} height={24} /> }, { name: 'Sleep', description: 'Improve yourself & get better', icon: <SleepIcon width={24} height={24} /> }, { name: 'Anxiety', description: 'Improve yourself & get better', icon: <AnxietyIcon width={24} height={24} /> }, { name: 'Focus', description: 'Improve yourself & get better', icon: <FocusIcon width={24} height={24} /> }, { name: 'Depression', description: 'Improve yourself & get better', icon: <DepressionIcon width={24} height={24} /> }, { name: 'Motivation', description: 'Improve yourself & get better', icon: <MotivationIcon width={24} height={24}/>}]
+
+import LottieView from "lottie-react-native";
+import Loader from '../../assets/lottie/Loader.json';
 
 
 const PAGE_WIDTH = Dimensions.get('window').width;
 const STATUS_BAR_HEIGHT = Constants.statusBarHeight;
 export const Home = props => {
-
+  const { appData, recommendedData, loading, HomeStart } = props;
+  const { recommendedSectionData, featuredSectionData } = appData;
+  useEffect(() => {
+    HomeStart();
+  }, []);
 
   const clearStorage = async () => {
     console.log("clear pressed")
     await asyncStorage.clear((e) => console.log(e))
   }
 
+  const greetingMessage = () => {
+    var today = new Date()
+    var curHr = today.getHours()
+    if (curHr >= 6 && curHr < 12) {
+      return {
+        text: 'Good Morning',
+        icon: <SunIcon width={48} height={48} style={{ opacity: 0.1 }} />
+      };
+    } else if (curHr >= 12 && curHr < 16) {
+      return {
+        text: 'Good Afternoon',
+        icon: <SunIcon width={48} height={48} style={{ opacity: 0.1 }} />
+      };
+    } else if (curHr >= 16 && curHr < 19) {
+      return {
+        text: 'Good Evening',
+        icon: <MoonIcon width={48} height={48} style={{ opacity: 0.1 }} />
+      };
+    } else {
+      return {
+        text: 'Hello',
+        icon: <MoonIcon width={48} height={48} style={{ opacity: 0.1 }} />
+      }
+    }
+  }
+  
 
-
+  const renderCollectionIcon = (name) => {
+    if (name === COLLECTION_NAME.STRESS) {
+      return <StressIcon width={24} height={24} />
+    } else if (name === COLLECTION_NAME.CONFIDENCE) {
+      return <ConfidenceIcon width={24} height={24} />
+    } else if (name === COLLECTION_NAME.FOCUS) {
+      return <FocusIcon width={24} height={24} />
+    } else if (name === COLLECTION_NAME.DEPRESSION) {
+      return <DepressionIcon width={24} height={24} />
+    } else if (name === COLLECTION_NAME.SLEEP) {
+      return <SleepIcon width={24} height={24} />
+    } else if (name === COLLECTION_NAME.ANXIETY) {
+      return <AnxietyIcon width={24} height={24} />
+    } else if (name === COLLECTION_NAME.MOTIVATION) {
+      return <MotivationIcon width={24} height={24} />
+    } else {
+      return <CovidIcon width={24} height={24} />
+    }
+  }
 
   return (
     <View style={styles.appContainer}>
+
       <ScrollView style={styles.homeContainer} showsVerticalScrollIndicator={false}>
+
         <View style={styles.headerContainer}>
-          <Text style={styles.headerTitle}>Discover</Text>
-          <TouchableOpacity onPress={clearStorage}><Text>Clear</Text></TouchableOpacity>
+          <View>
+            <Text style={styles.headerTitle}>{greetingMessage().text},</Text>
+            <TouchableOpacity onPress={clearStorage}><Text style={styles.headerSubTitle}>We wish you have a great day</Text></TouchableOpacity>
+          </View>
+          {greetingMessage().icon}
         </View>
+
         <View style={styles.featuredContainer}>
           <View style={styles.featureLeft}>
             <Text style={styles.feauturedTitle}>Featured Resource</Text>
-            <TouchableOpacity style={styles.buttonContainer}>
-              <Text style={styles.buttonText}>Explore</Text>
+            <TouchableOpacity style={styles.buttonContainer} onPress={() => {
+              props.navigation.navigate(PAGES.FEATURED, {
+                
+              });
+            }}>
+              <Text style={styles.buttonText}>View</Text>
             </TouchableOpacity>
           </View>
           <FeaturedIllustrationIcon width={118} height={118} />
         </View>
-        <Text style={styles.subTitle}>Collections</Text>
+
+        <Text style={styles.subTitle}>What's your struggle?</Text>
         <View style={styles.collectionScrollContainer}>
           <ScrollView
             horizontal={true}
@@ -68,61 +134,63 @@ export const Home = props => {
             showsHorizontalScrollIndicator={false}
           >
             <View style={styles.collectionItemsContainer}>
-              {collectionsData.map((collection, collectionId) => (
-                <TouchableOpacity onPress={() => {
-                  props.navigation.navigate('Collection', {
-                    collection
-                  });
-                }} key={collectionId} style={styles.collectionItemContainer}>
-                  {collection.icon}
-                  <Text style={styles.collectionItemText}>{collection.name}</Text>
-                </TouchableOpacity>
-              ))}
+              {Object.keys(COLLECTION_NAME).map((collectionName, collectionId) => {
+                let collection = dataFromAPI.collections[COLLECTION_NAME[collectionName]];
+                return (
+                  <TouchableOpacity onPress={() => {
+                    props.navigation.navigate(PAGES.COLLECTION, {
+                      collection
+                    });
+                  }} key={collectionId} style={styles.collectionItemContainer}>
+                    {renderCollectionIcon(COLLECTION_NAME[collectionName])}
+                    <Text style={styles.collectionItemText}>{COLLECTION_NAME[collectionName]}</Text>
+                  </TouchableOpacity>
+                )
+              })}
             </View>
           </ScrollView>
         </View>
-        <Text style={styles.subTitle}>Recommended</Text>
-        <View style={styles.cardHeightContainer}>
-          <ScrollView
-            horizontal={true}
-            style={styles.cardScrollContainer}
-            showsHorizontalScrollIndicator={false}
-          >
-            <View style={styles.cardsContainer}>
-              <View style={styles.cardContainer}>
-                <Text style={styles.cardTitle}>Anxiety Problems</Text>
-                <Text style={styles.cardDuration}>20 min</Text>
-                <TouchableOpacity
-                  style={styles.cardButton}
-                >
-                  <AntDesign name="arrowright" size={23} color="white" />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.cardContainer}>
-                <Text style={styles.cardTitle}>Anxiety Problems</Text>
-                <Text style={styles.cardDuration}>20 min</Text>
-                <TouchableOpacity
-                  style={styles.cardButton}
-                >
-                  <AntDesign name="arrowright" size={23} color="white" />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.cardContainer}>
-                <Text style={styles.cardTitle}>Anxiety Problems</Text>
-                <Text style={styles.cardDuration}>20 min</Text>
-                <TouchableOpacity
-                  style={styles.cardButton}
-                >
-                  <AntDesign name="arrowright" size={23} color="white" />
-                </TouchableOpacity>
-              </View>
-            </View>
+        
+        {recommendedData  && (
+          <>
+            <Text style={styles.subTitle}>Recommended</Text>
+            
+            <View style={styles.cardHeightContainer}>
 
-          </ScrollView>
-        </View>
+              {loading ? (
+                <View style={styles.loadingContainer}>
+                  <LottieView
+                    source={Loader}
+                    autoPlay
+                    style={{ width: 100, height: 100 }}
+                    resizeMode="cover"
+                  />
+                </View>
+              ) : recommendedData.map((article, articleId) => (
+                <ArticleCard
+                  key={articleId}
+                  title={article.title}
+                  publisher={article.publisher}
+                  url={article.url}
+                  author={article.author}
+                  readDuration={article.readDuration}
+                  thumbnail={article.thumbnail}
+                  onPress={async () => {
+                    props.navigation.navigate(PAGES.WEBVIEW, {
+                      url: article.url,
+                      title: article.title
+                    });
+                  }}
+                />
+              ))}
+            </View> 
+          </>
+        )}
+        
+
         <View style={styles.footerContainer}>
           <FooterIllustrationIcon style={styles.footerImg} width={PAGE_WIDTH} height={PAGE_WIDTH * 0.6611} />
-          <Text style={styles.footerTopTitle}>More Content & Feature</Text>
+          <Text style={styles.footerTopTitle}>keep an eye for more content & features</Text>
           <View style={styles.footerBottomTitleContainer}>
             <Text style={[styles.footerBoldTitle, styles.footerTitleGreen]}>Coming</Text>
             <Text style={[styles.footerBoldTitle, styles.footerTitleOrange]}>Soon</Text>
@@ -139,12 +207,13 @@ export const mapStateToProps = (state,props) => {
   return createStructuredSelector({
     home: makeSelectHomeState(),
     loading: makeSelectLoading(),
-    error: makeSelectError()
+    error: makeSelectError(),
+    recommendedData: makeSelectRecommendedData(),
 });
 } 
 export const mapDispatchToProps = (dispatch) => {
   return {
-    HomeStart: ({ payload, metadata }) => dispatch(HomeAction.start({ payload, metadata }))
+    HomeStart: () => dispatch(HomeAction.start())
   };
 }
 
@@ -161,13 +230,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   headerContainer: {
-    padding: 16
+    padding: 16,
+    paddingBottom: 0,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
   headerTitle: {
-    fontSize: theme.text.fontSize.one,
-    letterSpacing: theme.text.letterSpacing.one,
+    fontSize: theme.text.fontSize.four,
+    letterSpacing: theme.text.letterSpacing.six,
     lineHeight: theme.text.lineHeight.one,
     fontFamily: theme.text.fontWeight.one,
+    color: theme.palette.neutral.six,
+    margin: 0,
+    padding: 0,
+  },
+  headerSubTitle: {
+    fontSize: theme.text.fontSize.five,
+    letterSpacing: theme.text.letterSpacing.five,
+    lineHeight: theme.text.lineHeight.five,
+    fontFamily: theme.text.fontWeight.five,
     color: theme.palette.neutral.six,
     margin: 0,
     padding: 0,
@@ -177,7 +258,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
     marginRight: 16,
     padding: 20,
-    marginTop: 20,
+    marginTop: 30,
     backgroundColor: theme.palette.primary.green.one,
     borderRadius: 12,
     flexDirection: 'row',
@@ -227,7 +308,7 @@ const styles = StyleSheet.create({
     paddingRight: 16,
   },
   collectionItemsContainer: {
-    width: 580,
+    width: 605,
     flexDirection: 'row',
     flexWrap: 'wrap'
   },
@@ -251,57 +332,14 @@ const styles = StyleSheet.create({
     color: theme.palette.neutral.six,
     marginLeft: 8,
   },
-  cardHeightContainer: {
-    height: 160,
-  },
-  cardScrollContainer: {
-    paddingLeft: 16,
-  },
-  cardsContainer: {
-    width: 829,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  cardContainer: {
-    borderRadius: 20,
-    paddingTop: 30,
-    paddingBottom: 32,
-    paddingLeft: 16,
-    paddingRight: 16, 
-    marginRight: 16, 
-    backgroundColor: theme.palette.white,
-    width: 255
-  },
-  cardTitle: {
-    fontSize: theme.text.fontSize.four,
-    letterSpacing: theme.text.letterSpacing.four,
-    lineHeight: theme.text.lineHeight.four,
-    fontFamily: theme.text.fontWeight.four,
-    color: theme.palette.neutral.six,
-    marginTop: 0,
-    marginBottom: 6,
-    marginLeft: 0,
-    marginRight: 0,
-  },
-  cardDuration: {
-    fontSize: theme.text.fontSize.six,
-    letterSpacing: theme.text.letterSpacing.six,
-    lineHeight: theme.text.lineHeight.six,
-    fontFamily: theme.text.fontWeight.six,
-    color: theme.palette.neutral.six,
-    marginTop: 0,
-    marginBottom: 20,
-    marginLeft: 0,
-    marginRight: 0,
-  },
-  cardButton: {
-    backgroundColor: theme.palette.primary.green.one,
-    margin: 0,
-    borderRadius: 50,
-    height: 32,
-    width: 32,
+  loadingContainer: {
+    width: PAGE_WIDTH - 32,
+    flex: 1,
     alignItems: 'center',
-    paddingTop: 4.5
+  },
+  cardHeightContainer: {
+    paddingLeft: 16,
+    paddingRight: 16,
   },
   footerContainer: {
     backgroundColor: theme.palette.white,

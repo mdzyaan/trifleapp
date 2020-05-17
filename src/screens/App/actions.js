@@ -7,18 +7,15 @@
 import { APP_START, APP_SUCCESS, APP_ERROR, USER_ONBOARD_START, USER_ONBOARD_SUCCESS, USER_ONBOARD_ERROR } from './constants';
 
 export const AppAction = {
-  start: ({ payload, metadata }) => {
+  start: () => {
     return {
       type: APP_START, 
-      payload, 
-      metadata
     }
   },
-  success: ({ payload, metadata }) => {
+  success: (data) => {
     return {
       type: APP_SUCCESS,
-      payload,
-      metadata
+      payload: data,
     }
   },
   error: ({ error }) => {
@@ -39,8 +36,6 @@ export const userOnboardAction = {
     }
   },
   success: (metadata) => {
-    // alert(`meta - ${JSON.stringify(metadata)}`)
-
     return {
       type: USER_ONBOARD_SUCCESS,
       metadata

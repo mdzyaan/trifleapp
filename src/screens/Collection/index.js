@@ -11,8 +11,8 @@ import React, {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { makeSelectCollectionState, makeSelectLoading, makeSelectError} from './selectors';
-import { CollectionAction } from './actions';
+import { makeSelectCollectionState, makeSelectLoading, makeSelectError, makeSelectVideoData, makeSelectArticleData} from './selectors';
+import { CollectionArticleAction, CollectionVideoAction } from './actions';
 import { Text, View, Animated, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
 import theme from '../../styles';
 import { AntDesign } from '@expo/vector-icons';
@@ -21,30 +21,36 @@ import Constants from 'expo-constants';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import ArtIcleTab from './Article';
 import VideoTab from './Video';
-import CollectionIllustration from '../../assets/icons/collectionIllustration.svg';
-const PAGE_WIDTH = Dimensions.get('window').width;
+import StressIllustration from '../../assets/illustration/stressIllustration.svg';
+import SleepIllustration from '../../assets/illustration/sleepIllustration.svg';
+import AnxietyIllustration from '../../assets/illustration/anxietyIllustration.svg';
+import FocusIllustration from '../../assets/illustration/focusIllustration.svg';
+import ConfidenceIllustration from '../../assets/illustration/confidenceIllustration.svg';
+import DepressionIllustration from '../../assets/illustration/depressionIllustration.svg';
+import MotivationIllustration from '../../assets/illustration/motivationIllustration.svg';
+import CovidIllustration from '../../assets/illustration/covidIllustration.svg';
+import { COLLECTION_NAME } from '../../common/constant';
+
 const PAGE_HEIGHT = Dimensions.get('window').height;
 const STATUS_BAR_HEIGHT = Constants.statusBarHeight;
 const HEADER_MIN_HEIGHT = 56 + STATUS_BAR_HEIGHT;
 const HEADER_MAX_HEIGHT = 240 ;
 
 export const Collection = props => {
-  console.log("collec", props)
+  const { collectionArticleStart, collectionVideoStart } = props;
   const Tab = createMaterialTopTabNavigator();
-
   const [scrollYAnimatedValue, setScrollYAnimatedValue] = useState(new Animated.Value(0));
-  let array = [];
   const collectionName = props.route.params.collection.name;
   const collectionDescription = props.route.params.collection.description;
+  const collectionKey = props.route.params.collection.key;
 
+  useEffect(() => {
 
-  // useEffect(() => {
+    const metadata = { collectionKey };
+    collectionArticleStart({ metadata });
+    collectionVideoStart({ metadata });
 
-  //   props.navigation.navigate('Videos', { collectionName, collectionDescription });
-
-  //   props.navigation.navigate('Articles', { collectionName, collectionDescription });
-  // },[]);
-
+  }, []);
 
   const headerHeight = scrollYAnimatedValue.interpolate(
     {
@@ -74,6 +80,25 @@ export const Collection = props => {
       extrapolate: 'clamp'
     });
 
+  const renderIllustration = (name) => {
+    if (name.toLowerCase() === COLLECTION_NAME.STRESS) {
+      return <StressIllustration style={styles.headerIllustration} width={190} height={190} />
+    } else if (name.toLowerCase() === COLLECTION_NAME.CONFIDENCE) {
+      return <ConfidenceIllustration style={styles.headerIllustration} width={190} height={190} />
+    } else if (name.toLowerCase() === COLLECTION_NAME.FOCUS) {
+      return <FocusIllustration style={styles.headerIllustration} width={190} height={190} />
+    } else if (name.toLowerCase() === COLLECTION_NAME.DEPRESSION) {
+      return <DepressionIllustration style={styles.headerIllustration} width={190} height={190} />
+    } else if (name.toLowerCase() === COLLECTION_NAME.SLEEP) {
+      return <SleepIllustration style={styles.headerIllustration} width={190} height={190} />
+    } else if (name.toLowerCase() === COLLECTION_NAME.ANXIETY) {
+      return <AnxietyIllustration style={styles.headerIllustration} width={190} height={190} />
+    } else if (name.toLowerCase() === COLLECTION_NAME.MOTIVATION) {
+      return <MotivationIllustration style={styles.headerIllustration} width={190} height={190} />
+    } else {
+      return <CovidIllustration style={styles.headerIllustration} width={190} height={190} />
+    }
+  }
 
   
   return (
@@ -103,7 +128,7 @@ export const Collection = props => {
               letterSpacing: theme.text.letterSpacing.five,
               lineHeight: theme.text.lineHeight.five,
               fontFamily: theme.text.fontWeight.five,
-              textTransform: 'lowercase'
+              textTransform: 'capitalize'
             },
             activeTintColor: theme.palette.primary.orange.one,
             inactiveTintColor: theme.palette.neutral.six,
@@ -111,10 +136,10 @@ export const Collection = props => {
             indicatorStyle: { backgroundColor: theme.palette.primary.orange.one, width: 38, marginLeft: 20 }
           }}>
             <Tab.Screen name="Articles" >
-              {tabprops => <ArtIcleTab {...tabprops} data={{ asdf: collectionName, collectionDescription }} />}
+              {tabprops => <ArtIcleTab {...tabprops} {...props}/>}
             </Tab.Screen>
             <Tab.Screen name="Videos" >
-              {tabprops => <VideoTab {...tabprops} data={{ asdf: collectionName, collectionDescription }} />}
+              {tabprops => <VideoTab {...tabprops} {...props}/>}
             </Tab.Screen>
           </Tab.Navigator>
          </View>
@@ -134,26 +159,29 @@ export const Collection = props => {
           { translateX: headerTitlePositionX,}
 
         ]}]}>{collectionName}</Animated.Text>
-        <CollectionIllustration style={styles.headerIllustration} width={222} height={169} />
+        {renderIllustration(collectionName)}
         <Animated.Text style={[styles.headerSubtitle, { opacity: headerOpacity}]}>{collectionDescription}</Animated.Text>
       </Animated.View>
     </View>
   );
 }
 Collection.propTypes = {
-  // CollectionStart: PropTypes.func.isRequired,
+  // collectionStart: PropTypes.func.isRequired,
 };
 export const mapStateToProps = (state,props) => {
   // @dev you can pass props to makeSelectFuncs(props) like so.
   return createStructuredSelector({
     collection: makeSelectCollectionState(),
     loading: makeSelectLoading(),
-    error: makeSelectError()
+    error: makeSelectError(),
+    videoData: makeSelectVideoData(), 
+    articleData: makeSelectArticleData()
 });
 } 
 export const mapDispatchToProps = (dispatch) => {
   return {
-    CollectionStart: ({ payload, metadata }) => dispatch(CollectionAction.start({ payload, metadata }))
+    collectionArticleStart: ({ metadata }) => dispatch(CollectionArticleAction.start({ metadata })),
+    collectionVideoStart: ({ metadata }) => dispatch(CollectionVideoAction.start({ metadata })),
   };
 }
 
@@ -169,7 +197,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   collectionContainer: {
-    // marginTop: STATUS_BAR_HEIGHT * 3,
     flex: 1,
   },
   backBtnWrapper: {
@@ -179,7 +206,7 @@ const styles = StyleSheet.create({
   headerIllustration: {
     position: 'absolute', 
     left: 190,
-    top: 111,
+    top: HEADER_MIN_HEIGHT,
   },
   headerTitle: {
     fontSize: theme.text.fontSize.two,

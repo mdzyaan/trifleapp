@@ -7,18 +7,15 @@
 import { HOME_START, HOME_SUCCESS, HOME_ERROR } from './constants';
 
 export const HomeAction = {
-  start: ({ payload, metadata }) => {
+  start: () => {
     return {
       type: HOME_START, 
-      payload, 
-      metadata
     }
   },
-  success: ({ payload, metadata }) => {
+  success: (data) => {
     return {
       type: HOME_SUCCESS,
-      payload,
-      metadata
+      payload: data,
     }
   },
   error: ({ error }) => {

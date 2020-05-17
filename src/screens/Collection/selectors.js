@@ -25,6 +25,18 @@ const makeSelectError = () =>
     subState => subState.error,
   );
 
+const makeSelectArticleData = () =>
+  createSelector(
+    selectCollectionDomain,
+    subState => subState.article,
+  );
+
+const makeSelectVideoData = () =>
+  createSelector(
+    selectCollectionDomain,
+    subState => subState.video,
+  );
 
 
-export { makeSelectCollectionState, makeSelectLoading, makeSelectError };
+
+export { makeSelectCollectionState, makeSelectLoading, makeSelectError, makeSelectVideoData, makeSelectArticleData };

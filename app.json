@@ -1,19 +1,24 @@
 {
   "expo": {
-    "name": "trifle",
+    "name": "Trifle",
     "slug": "trifle",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
+      "mdpi": "./assets/splash/mdpi/splash.png",
+      "hdpi": "./assets/splash/hdpi/splash.png",
+      "xhdpi": "./assets/splash/xhdpi/splash.png",
+      "xxhdpi": "./assets/splash/xxhdpi/splash.png",
+      "xxxhdpi": "./assets/splash/xxxhdpi/splash.png",
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#009691"
+      "backgroundColor": "#ffffff"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -26,7 +31,8 @@
     },
     "android": {
       "package": "com.trifle.app",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 3
     },
     "packagerOpts": {
       "config": "metro.config.js",
@@ -37,6 +43,7 @@
         "ts",
         "tsx"
       ]
-    }
+    },
+    "description": ""
   }
 }
