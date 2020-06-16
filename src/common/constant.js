@@ -1,12 +1,11 @@
 export const COLLECTION_NAME = {
-    STRESS: 'stress',
-    CONFIDENCE: 'confidence',
-    FOCUS: 'focus',
-    DEPRESSION: 'depression',
-    SLEEP: 'sleep',
     ANXIETY: 'anxiety',
-    MOTIVATION: 'motivation',
-    COVID: 'covid19',
+    CONFIDENCE: 'confidence',
+    DEPRESSION: 'depression',
+    FOCUS: 'focus',
+    MOTIVATION: 'motivation',  
+    SLEEP: 'sleep',
+    STRESS: 'stress',    
 };
 
 export const PAGES = {
@@ -108,13 +107,6 @@ export const dataFromAPI = {
             "description": "Tough times don’t last, tough people do",
             "pageIllustration": "",
             "key": COLLECTION_NAME.MOTIVATION
-        },
-        [COLLECTION_NAME.COVID]: {
-            "name": "Covid 19",
-            "icon": "",
-            "description": "Change this description",
-            "pageIllustration": "",
-            "key": COLLECTION_NAME.COVID
         },
     }
 }

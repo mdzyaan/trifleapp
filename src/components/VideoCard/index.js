@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     videoImage: {
         height: 178,
         top: 0,
-        opacity: 0.5
+        opacity: 0.3,
     },
     videoPlayBtnWrapper: {
         height: 40,

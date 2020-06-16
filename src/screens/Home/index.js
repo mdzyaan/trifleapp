@@ -107,7 +107,7 @@ export const Home = props => {
         <View style={styles.headerContainer}>
           <View>
             <Text style={styles.headerTitle}>{greetingMessage().text},</Text>
-            <TouchableOpacity onPress={clearStorage}><Text style={styles.headerSubTitle}>We wish you have a great day</Text></TouchableOpacity>
+            <Text style={styles.headerSubTitle}>We wish you have a great day</Text>
           </View>
           {greetingMessage().icon}
         </View>
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     paddingRight: 16,
   },
   collectionItemsContainer: {
-    width: 605,
+    width: 560,
     flexDirection: 'row',
     flexWrap: 'wrap'
   },

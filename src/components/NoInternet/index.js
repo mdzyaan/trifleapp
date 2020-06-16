@@ -10,8 +10,8 @@ const NoInternet = (props) => {
     return (
         <View>
             <NoInternetIllustration style={styles.illustration} width={140} height={113} />
-            <Text style={styles.header}>Oh No!</Text>
-            <Text style={styles.description}>No internet connection. Check your network and try again</Text>
+            <Text style={styles.header}>Whoops!</Text>
+            <Text style={styles.description}>No internet connection found. Check your connection and try again</Text>
         </View>
     )
 }

@@ -23,6 +23,8 @@ import ConfidenceIcon from '../../assets/icons/confidence.svg';
 import DepressionIcon from '../../assets/icons/depression.svg';
 import MotivationIcon from '../../assets/icons/motivation.svg';
 
+import LottieView from "lottie-react-native";
+import Loader from '../../assets/lottie/Loader.json';
 
 
 const PAGE_WIDTH = Dimensions.get('window').width;
@@ -124,7 +126,7 @@ export const Featured = props => {
         <>
           
           <FeaturedBg width={(502 * (PAGE_WIDTH * 0.00226))} height={(785 * (PAGE_WIDTH * 0.00226))} style={{ position: 'absolute', top: 16, }} />
-        {!loading && (
+        {!loading ? (
           <>
             <Text style={styles.cardPagination}>{currentCard + 1} of {articleList.length}</Text>
             <Carousel
@@ -137,6 +139,15 @@ export const Featured = props => {
               onSnapToItem={index => setCurrentCard(index)}
             />
           </>
+        ) : (
+            <View style={styles.loadingContainer}>
+              <LottieView
+                source={Loader}
+                autoPlay
+                style={{ width: 100, height: 100 }}
+                resizeMode="cover"
+              />
+              </View>
         )}
 
         </>
@@ -166,6 +177,17 @@ export default connect(mapStateToProps, mapDispatchToProps)(Featured);
     
     
 const styles = StyleSheet.create({
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: PAGE_WIDTH - 60,
+    height: PAGE_WIDTH - 30,
+    padding: 20,
+    marginRight: 20,
+    marginLeft: 20,
+    borderRadius: 20,
+    backgroundColor: theme.palette.white,
+  },
   headerTitle: {
     fontSize: theme.text.fontSize.two,
     letterSpacing: theme.text.letterSpacing.two,
@@ -183,7 +205,7 @@ const styles = StyleSheet.create({
   },
   featuredCard: {
     width: PAGE_WIDTH - 60,
-    height: PAGE_WIDTH - 40,
+    height: PAGE_WIDTH - 30,
     padding: 20,
     marginRight: 20,
     marginLeft: 20,

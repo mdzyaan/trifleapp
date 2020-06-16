@@ -63,7 +63,11 @@ export default (props) => {
                             author={video.author}
                             thumbnail={video.thumbnail}
                             onPress={async () => {
-                                props.navigation.navigate(PAGES.YOUTUBE, {
+                                // props.navigation.navigate(PAGES.YOUTUBE, {
+                                //     url: video.yturl,
+                                //     title: video.title
+                                // });
+                                props.navigation.navigate('webview', {
                                     url: video.yturl,
                                     title: video.title
                                 });

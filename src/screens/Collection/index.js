@@ -32,6 +32,7 @@ import CovidIllustration from '../../assets/illustration/covidIllustration.svg';
 import { COLLECTION_NAME } from '../../common/constant';
 
 const PAGE_HEIGHT = Dimensions.get('window').height;
+const PAGE_WIDTH = Dimensions.get('window').width;
 const STATUS_BAR_HEIGHT = Constants.statusBarHeight;
 const HEADER_MIN_HEIGHT = 56 + STATUS_BAR_HEIGHT;
 const HEADER_MAX_HEIGHT = 240 ;
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
   },
   headerIllustration: {
     position: 'absolute', 
-    left: 190,
+    left: PAGE_WIDTH/1.8,
     top: HEADER_MIN_HEIGHT,
   },
   headerTitle: {

@@ -30,17 +30,18 @@ export const Youtube = props => {
 
   useEffect(() => {
     const backAction = () => {
-      Alert.alert("Hold on!", "Are you sure you want to go back?", [
-        {
-          text: "Cancel",
-          onPress: () => null,
-          style: "cancel"
-        },
-        { text: "YES", onPress: () => {
-          changeOrientation.PORTRAIT_UP()
-          props.navigation.goBack(null);
-        }}
-      ]);
+      // Alert.alert("Hold on!", "Are you sure you want to go back?", [
+      //   {
+      //     text: "Cancel",
+      //     onPress: () => null,
+      //     style: "cancel"
+      //   },
+      //   { text: "YES", onPress: () => {
+          
+      //   }}
+      // ]);
+      changeOrientation.PORTRAIT_UP()
+      props.navigation.goBack(null);
       return true;
     };
 

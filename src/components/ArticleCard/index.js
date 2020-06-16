@@ -59,9 +59,9 @@ const styles = StyleSheet.create({
         width: PAGE_WIDTH - 160,
     },
     articleTitle: {
-        fontSize: theme.text.fontSize.four,
-        letterSpacing: theme.text.letterSpacing.four,
-        lineHeight: theme.text.lineHeight.four,
+        fontSize: theme.text.fontSize.five,
+        letterSpacing: theme.text.letterSpacing.five,
+        lineHeight: theme.text.lineHeight.five,
         fontFamily: theme.text.fontWeight.four,
         color: theme.palette.primary.green.one,
     },
